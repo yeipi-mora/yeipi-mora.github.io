@@ -1,19 +1,5 @@
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 10px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-nav ul li a:hover {
-    color: #666;
+canvas {
+    display: block;
+    margin: 0 auto; /* Centrar horizontalmente */
+    border: 1px solid black;
 }

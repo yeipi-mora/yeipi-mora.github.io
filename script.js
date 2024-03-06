@@ -1,44 +1,51 @@
-// Get the canvas element
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+document.addEventListener("DOMContentLoaded", function() {
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
 
-// Function to draw a filled triangle
-function drawTriangle(x1, y1, x2, y2, x3, y3) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.lineTo(x3, y3);
-    ctx.closePath();
-    ctx.fill();
-}
-
-// Function to recursively draw the Sierpinski Triangle
-function drawSierpinski(x1, y1, x2, y2, x3, y3, depth) {
-    if (depth === 0) {
-        drawTriangle(x1, y1, x2, y2, x3, y3);
-    } else {
-        const mid1x = (x1 + x2) / 2;
-        const mid1y = (y1 + y2) / 2;
-        const mid2x = (x2 + x3) / 2;
-        const mid2y = (y2 + y3) / 2;
-        const mid3x = (x1 + x3) / 2;
-        const mid3y = (y1 + y3) / 2;
-
-        drawSierpinski(x1, y1, mid1x, mid1y, mid3x, mid3y, depth - 1);
-        drawSierpinski(mid1x, mid1y, x2, y2, mid2x, mid2y, depth - 1);
-        drawSierpinski(mid3x, mid3y, mid2x, mid2y, x3, y3, depth - 1);
+    // Función para dibujar un triángulo
+    function drawTriangle(x, y, size) {
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x + size / 2, y - (size * Math.sqrt(3)) / 2);
+        context.lineTo(x + size, y);
+        context.closePath();
+        context.stroke();
     }
-}
 
-// Draw the Sierpinski Triangle
-const initialDepth = 5; // Adjust the depth as needed
-const side = 500; // Adjust the size of the triangle as needed
-const height = Math.sqrt(3) * side / 2;
-const x1 = 50;
-const y1 = 550;
-const x2 = x1 + side;
-const y2 = y1;
-const x3 = x1 + side / 2;
-const y3 = y1 - height;
+    // Función para limpiar el canvas
+    function clearCanvas() {
+        context.clearRect(0, 0, width, height);
+    }
 
-drawSierpinski(x1, y1, x2, y2, x3, y3, initialDepth);
+    // Función recursiva para dibujar el triángulo de Sierpinski
+    function drawSierpinski(x, y, size, depth) {
+        if (depth === 0) {
+            drawTriangle(x, y, size);
+        } else {
+            const newSize = size / 2;
+
+            // Dibujar triángulos recursivamente
+            drawSierpinski(x, y, newSize, depth - 1);
+            drawSierpinski(x + newSize / 2, y - (newSize * Math.sqrt(3)) / 2, newSize, depth - 1);
+            drawSierpinski(x + newSize, y, newSize, depth - 1);
+        }
+    }
+
+    // Dibujar el triángulo de Sierpinski gradualmente con animación
+    function drawSierpinskiAnimated(depth) {
+        let currentDepth = 0;
+        const interval = setInterval(function() {
+            clearCanvas();
+            drawSierpinski(0, height, width, currentDepth);
+            currentDepth++;
+            if (currentDepth > depth) {
+                clearInterval(interval);
+            }
+        }, 500); // Intervalo de tiempo en milisegundos
+    }
+
+    // Llamar a la función de animación con una profundidad de 6
+    drawSierpinskiAnimated(6);
+});
